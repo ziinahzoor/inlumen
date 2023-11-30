@@ -5,20 +5,22 @@ using Pathfinding;
 
 public class SpitterScript : MonoBehaviour
 {
-    [Header ("Attack Parameters")]
+    [Header("Attack Parameters")]
     [SerializeField] private float attackCooldown;
     [SerializeField] private int damage;
 
-    [Header ("Collider Parameters")]
+    [Header("Collider Parameters")]
     [SerializeField] private float colliderDistance;
     [SerializeField] private BoxCollider2D boxCollider;
 
-    [Header ("Enemy Layer")]
+    [Header("Enemy Layer")]
     [SerializeField] private LayerMask playerLayer;
     private float cooldownTimer = Mathf.Infinity;
 
-    
+
     [SerializeField] private GameObject[] SpitterProjectiles;
+    [SerializeField] private GameObject Healthbar;
+
 
     private Animator anim;
     private Transform player; // Referência ao transform do jogador
@@ -35,14 +37,17 @@ public class SpitterScript : MonoBehaviour
         FlipEnemy();
         cooldownTimer += Time.deltaTime;
         //Attack only when player in sight
-        if(CheckClosePlayer()) {
-            if(cooldownTimer >= attackCooldown) {
+        if (CheckClosePlayer())
+        {
+            if (cooldownTimer >= attackCooldown)
+            {
                 cooldownTimer = 0;
                 anim.SetTrigger("attack");
             }
         }
     }
-    private void FlipEnemy(){
+    private void FlipEnemy()
+    {
         if (player.position.x < transform.position.x)
         {
             transform.localScale = new Vector3(-1, transform.localScale.y, transform.localScale.z);
@@ -52,15 +57,22 @@ public class SpitterScript : MonoBehaviour
             transform.localScale = new Vector3(1, transform.localScale.y, transform.localScale.z);
         }
     }
-    private bool CheckClosePlayer() {
-        return (Vector2.Distance(transform.position, player.position) < 8f);
+    private bool CheckClosePlayer()
+    {
+        var condition = Vector2.Distance(transform.position, player.position) < 8f;
+
+        Healthbar.SetActive(condition);
+        return condition;
     }
     private void ProjectileThrow()
     {
         int projectileIndex = FindProjectile();
-        if (SpitterProjectiles[projectileIndex].GetComponent<SpitterProjectileScript>() != null){
+        if (SpitterProjectiles[projectileIndex].GetComponent<SpitterProjectileScript>() != null)
+        {
             SpitterProjectiles[projectileIndex].GetComponent<SpitterProjectileScript>().SetFollowPlayer(1);
-        }else{
+        }
+        else
+        {
             Debug.Log("SpitterProjectileScript not found");
         }
     }
@@ -73,11 +85,13 @@ public class SpitterScript : MonoBehaviour
         }
         return 0;
     }
-    public void Desactivate() {
+    public void Desactivate()
+    {
         //Desactivate enemy when health is 0
         gameObject.SetActive(false);
     }
-    public void DesactivateAllProjectiles(){
+    public void DesactivateAllProjectiles()
+    {
         for (int i = 0; i < SpitterProjectiles.Length; i++)
         {
             SpitterProjectiles[i].GetComponent<SpitterProjectileScript>().DesactivateByDeath();

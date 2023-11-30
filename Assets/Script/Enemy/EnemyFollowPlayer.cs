@@ -13,12 +13,13 @@ public class EnemyFollowPlayer : MonoBehaviour
     [Header("Detection Parameters")]
     [SerializeField] private float detectionRadius;
 
-    [Header ("Enemy Layer")]
+    [Header("Enemy Layer")]
     [SerializeField] private LayerMask playerLayer;
 
-    [Header ("Collider Parameters")]
-    [SerializeField]private Rigidbody2D body;
-    [SerializeField]private BoxCollider2D boxCollider;
+    [Header("Collider Parameters")]
+    [SerializeField] private Rigidbody2D body;
+    [SerializeField] private BoxCollider2D boxCollider;
+    [SerializeField] private GameObject Healthbar;
 
     private Animator anim;
     private Health playerHealth;
@@ -41,20 +42,31 @@ public class EnemyFollowPlayer : MonoBehaviour
     void Update()
     {
         CheckClosePlayer();
-        if(anim.GetBool("IsInAction") == false) {
+        if (anim.GetBool("IsInAction") == false)
+        {
             CheckPlayer();
             FlipEnemy();
-        } else{
+        }
+        else
+        {
             body.velocity = new Vector2(0, 0);
         }
 
     }
-    private void CheckClosePlayer() {
-        if (Vector2.Distance(transform.position, player.position) < 3f){
+    private void CheckClosePlayer()
+    {
+        if (Vector2.Distance(transform.position, player.position) < 3f)
+        {
             CanFollowPlayer = true;
+            Healthbar.SetActive(true);
+        }
+        else
+        {
+            Healthbar.SetActive(false);
         }
     }
-    private void FlipEnemy(){
+    private void FlipEnemy()
+    {
         if (player.position.x < transform.position.x && isFacingRight)
         {
             // Inverte a escala no eixo X quando indo para a esquerda
@@ -98,7 +110,7 @@ public class EnemyFollowPlayer : MonoBehaviour
             {
                 transform.position = Vector2.MoveTowards(transform.position, targetPosition, step);
             }
-           
+
 
             // Verifica a direção do movimento para definir a escala
             //if (targetPosition.x < transform.position.x && isFacingRight)
@@ -135,5 +147,5 @@ public class EnemyFollowPlayer : MonoBehaviour
             anim.SetBool("IsInAction", false);
         }
     }
-    
+
 }

@@ -14,14 +14,15 @@ public class EnemyFollowPlayerJump : MonoBehaviour
     [Header("Detection Parameters")]
     [SerializeField] private float detectionRadius;
 
-    [Header ("Enemy Layer")]
+    [Header("Enemy Layer")]
     //[SerializeField] private LayerMask playerLayer;
 
-    [Header ("Collider Parameters")]
-    [SerializeField]private Rigidbody2D body;
-    [SerializeField]private BoxCollider2D boxCollider;
+    [Header("Collider Parameters")]
+    [SerializeField] private Rigidbody2D body;
+    [SerializeField] private BoxCollider2D boxCollider;
+    [SerializeField] private GameObject Healthbar;
 
-    
+
     private Animator anim;
     private Health playerHealth;
     private Transform player; // Referência ao transform do jogador
@@ -48,17 +49,21 @@ public class EnemyFollowPlayerJump : MonoBehaviour
         CheckClosePlayer();
         IsFalling();
         // Se não estiver realizando nenhuma ação "importante" (como ataque) então verifica se o player está no raio de alcance e segue ele
-        if(anim.GetBool("IsInAction") == false) {
+        if (anim.GetBool("IsInAction") == false)
+        {
             CheckPlayer();
             FlipEnemy();
-        }else{
+        }
+        else
+        {
             body.velocity = new Vector2(0, 0);
         }
-         if (IsGrounded())
+        if (IsGrounded())
         {
             isFalling = false;
         }
-        if (CheckFrontWall() && IsGrounded()){
+        if (CheckFrontWall() && IsGrounded())
+        {
             Jump();
         }
         if (canFall() && !isFalling)
@@ -67,12 +72,20 @@ public class EnemyFollowPlayerJump : MonoBehaviour
             isFalling = true;
         }
     }
-    private void CheckClosePlayer() {
-        if (Vector2.Distance(transform.position, player.position) < 3f){
+    private void CheckClosePlayer()
+    {
+        if (Vector2.Distance(transform.position, player.position) < 3f)
+        {
             CanFollowPlayer = true;
+            Healthbar.SetActive(true);
+        }
+        else
+        {
+            Healthbar.SetActive(false);
         }
     }
-    private void FlipEnemy(){
+    private void FlipEnemy()
+    {
         if (player.position.x < transform.position.x && isFacingRight)
         {
             // Inverte a escala no eixo X quando indo para a esquerda
@@ -84,9 +97,11 @@ public class EnemyFollowPlayerJump : MonoBehaviour
             Flip();
         }
     }
-    private void CheckIsAlive(){
+    private void CheckIsAlive()
+    {
         Debug.Log("CheckIsAlive");
-        if (anim.GetBool("IsAlive") == false){
+        if (anim.GetBool("IsAlive") == false)
+        {
             Debug.Log("Enemy died");
             anim.SetTrigger("die");
 
@@ -128,7 +143,7 @@ public class EnemyFollowPlayerJump : MonoBehaviour
             {
                 transform.position = Vector2.MoveTowards(transform.position, targetPosition, step);
             }
-           
+
 
             // Verifica a direção do movimento para definir a escala
             //if (targetPosition.x < transform.position.x && isFacingRight)
@@ -172,8 +187,10 @@ public class EnemyFollowPlayerJump : MonoBehaviour
         anim.SetBool("IsFalling", false);
         return raycastHit.collider != null;
     }
-    public void IsFalling(){
-        if (body.velocity.y < 0){
+    public void IsFalling()
+    {
+        if (body.velocity.y < 0)
+        {
             anim.SetBool("IsFalling", true);
         }
     }
@@ -193,5 +210,5 @@ public class EnemyFollowPlayerJump : MonoBehaviour
             anim.SetBool("IsInAction", false);
         }
     }
-    
+
 }
