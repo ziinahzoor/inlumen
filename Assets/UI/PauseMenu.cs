@@ -9,6 +9,7 @@ using UnityEngine.UI;
 public class PauseMenu : MonoBehaviour
 {
     public static bool GameIsPaused = false;
+    public static bool HealthbarAlwaysOn = false;
 
     public GameObject pauseMenuUI;
     public GameObject optionsMenuUI;
@@ -124,15 +125,34 @@ public class PauseMenu : MonoBehaviour
 
     public void ToggleHealthbars(Toggle toggle)
     {
+        var alwaysOn = transform.Find("OptionsMenu/HealthbarAlwaysOnToggle").gameObject.GetComponent<Toggle>();
+        alwaysOn.interactable = toggle.isOn;
+        if (alwaysOn.isOn)
+        {
+            alwaysOn.isOn = false;
+            ToggleAlwaysOnHealthbars(alwaysOn);
+        }
+
         var healthbars = GameObject.FindGameObjectsWithTag("EnemyHealthbar");
-        Debug.Log(healthbars.Count());
 
         foreach (var healthbar in healthbars)
         {
-            // Debug.Log(toggle.isOn);
             healthbar.transform.Find("HealthBar").gameObject.SetActive(toggle.isOn);
         }
-        //    var toggle = GetComponent<Toggle>();
+    }
+
+    public void ToggleAlwaysOnHealthbars(Toggle toggle)
+    {
+        HealthbarAlwaysOn = toggle.isOn;
+
+        if (HealthbarAlwaysOn)
+        {
+            var healthbars = GameObject.FindGameObjectsWithTag("EnemyHealthbar");
+            foreach (var healthbar in healthbars)
+            {
+                healthbar.transform.Find("HealthBar").gameObject.GetComponent<Canvas>().enabled = true;
+            }
+        }
     }
 
     private IEnumerator WaitForAudioToLoad(Action afterWait)

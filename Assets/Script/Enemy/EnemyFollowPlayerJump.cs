@@ -81,7 +81,7 @@ public class EnemyFollowPlayerJump : MonoBehaviour
             CanFollowPlayer = true;
             healthbar.enabled = true;
         }
-        else
+        else if (!PauseMenu.HealthbarAlwaysOn)
         {
             healthbar.enabled = false;
         }

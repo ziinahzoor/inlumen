@@ -65,10 +65,11 @@ public class WarpScript : MonoBehaviour
             aIPath.canMove = true;
             healthbar.enabled = true;
         }
-        else
+        else if (!PauseMenu.HealthbarAlwaysOn)
         {
             healthbar.enabled = false;
         }
+
     }
     private bool PlayerInSight()
     {

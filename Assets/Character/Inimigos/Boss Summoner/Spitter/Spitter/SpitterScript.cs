@@ -61,7 +61,10 @@ public class SpitterScript : MonoBehaviour
     {
         var condition = Vector2.Distance(transform.position, player.position) < 8f;
 
-        Healthbar.transform.Find("HealthBar").GetComponent<Canvas>().enabled = condition;
+        if (!PauseMenu.HealthbarAlwaysOn)
+        {
+            Healthbar.transform.Find("HealthBar").GetComponent<Canvas>().enabled = condition;
+        }
         return condition;
     }
     private void ProjectileThrow()
