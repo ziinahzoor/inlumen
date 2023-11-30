@@ -34,7 +34,7 @@ public class EnemyHealthbar : MonoBehaviour
 		float currentValue = slider.value;
 		while (currentValue >= targetValue)
 		{
-			currentValue -= 2 * Time.deltaTime;
+			currentValue -= 3 * Time.deltaTime;
 			slider.value = currentValue;
 			yield return null;
 		}
