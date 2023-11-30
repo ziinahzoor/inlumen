@@ -74,14 +74,16 @@ public class EnemyFollowPlayerJump : MonoBehaviour
     }
     private void CheckClosePlayer()
     {
+        var healthbar = Healthbar.transform.Find("HealthBar").GetComponent<Canvas>();
+
         if (Vector2.Distance(transform.position, player.position) < 3f)
         {
             CanFollowPlayer = true;
-            Healthbar.SetActive(true);
+            healthbar.enabled = true;
         }
         else
         {
-            Healthbar.SetActive(false);
+            healthbar.enabled = false;
         }
     }
     private void FlipEnemy()

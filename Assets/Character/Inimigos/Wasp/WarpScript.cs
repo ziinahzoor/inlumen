@@ -59,14 +59,15 @@ public class WarpScript : MonoBehaviour
     }
     private void CheckClosePlayer()
     {
+        var healthbar = Healthbar.transform.Find("HealthBar").GetComponent<Canvas>();
         if (Vector2.Distance(transform.position, player.position) < 7f)
         {
             aIPath.canMove = true;
-            Healthbar.SetActive(true);
+            healthbar.enabled = true;
         }
         else
         {
-            Healthbar.SetActive(false);
+            healthbar.enabled = false;
         }
     }
     private bool PlayerInSight()

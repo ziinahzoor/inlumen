@@ -1,14 +1,17 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class PauseMenu : MonoBehaviour
 {
     public static bool GameIsPaused = false;
 
     public GameObject pauseMenuUI;
+    public GameObject optionsMenuUI;
     private AudioSource AudioSource;
     [SerializeField] private AudioClip MenuHoverSound;
     [SerializeField] private AudioClip MenuClickSound;
@@ -29,7 +32,14 @@ public class PauseMenu : MonoBehaviour
 
             if (GameIsPaused)
             {
-                Resume();
+                if (pauseMenuUI.activeSelf)
+                {
+                    Resume();
+                }
+                else
+                {
+                    ReturnOptions();
+                }
             }
             else
             {
@@ -96,6 +106,33 @@ public class PauseMenu : MonoBehaviour
 
             Application.Quit();
         }));
+    }
+
+    public void OpenOptions()
+    {
+        AudioSource.PlayOneShot(MenuClickSound);
+        pauseMenuUI.SetActive(false);
+        optionsMenuUI.SetActive(true);
+    }
+
+    public void ReturnOptions()
+    {
+        AudioSource.PlayOneShot(MenuClickSound);
+        optionsMenuUI.SetActive(false);
+        pauseMenuUI.SetActive(true);
+    }
+
+    public void ToggleHealthbars(Toggle toggle)
+    {
+        var healthbars = GameObject.FindGameObjectsWithTag("EnemyHealthbar");
+        Debug.Log(healthbars.Count());
+
+        foreach (var healthbar in healthbars)
+        {
+            // Debug.Log(toggle.isOn);
+            healthbar.transform.Find("HealthBar").gameObject.SetActive(toggle.isOn);
+        }
+        //    var toggle = GetComponent<Toggle>();
     }
 
     private IEnumerator WaitForAudioToLoad(Action afterWait)
