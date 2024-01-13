@@ -50,9 +50,14 @@ public class Health : MonoBehaviour
             }
             else
             {
-                this.startingHealth = PlayerHealth.startingHealth;
-                this.currentHealth = PlayerHealth.currentHealth;
-                this.maxHealth = PlayerHealth.maxHealth;
+                startingHealth = PlayerHealth.startingHealth;
+                currentHealth = PlayerHealth.currentHealth;
+                maxHealth = PlayerHealth.maxHealth;
+            }
+
+            if (currentHealth == 0)
+            {
+                currentHealth = PlayerHealth.maxHealth;
             }
         }
     }
