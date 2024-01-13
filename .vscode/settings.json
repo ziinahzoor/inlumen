@@ -51,5 +51,6 @@
 		"temp/": true,
 		"Temp/": true
 	},
-	"dotnet.defaultSolution": "inlumem.sln"
+	"dotnet.defaultSolution": "inlumem.sln",
+	"dotnet.preferCSharpExtension": true
 }

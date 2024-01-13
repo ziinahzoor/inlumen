@@ -1,15 +1,22 @@
 using UnityEngine;
+using System;
 using System.Collections;
 
 public class Health : MonoBehaviour
 {
     [Header("Health")]
     [SerializeField] public float startingHealth;
+    [NonSerialized] public float maxHealth;
 
     [Header("Collider Parameters")]
     [SerializeField] private Rigidbody2D body;
     [SerializeField] private BoxCollider2D boxCollider;
     //[SerializeField] private GameObject light;
+
+    [Header("Cain Health")]
+    [SerializeField] private Health cainHealth;
+    [SerializeField] private float recoveryPoints;
+    [SerializeField] private bool permanentUpgrade = false;
 
 
     public float currentHealth { get; private set; }
@@ -26,6 +33,7 @@ public class Health : MonoBehaviour
         boxCollider = GetComponent<BoxCollider2D>();
         body = GetComponent<Rigidbody2D>();
         currentHealth = startingHealth;
+        maxHealth = startingHealth;
         anim = GetComponent<Animator>();
         spriteRend = GetComponent<SpriteRenderer>();
         _damageFlash = GetComponent<DamageFlash>();
@@ -34,6 +42,19 @@ public class Health : MonoBehaviour
             playerDeathCheckPoint = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerDeathCheckPoint>();
         }
 
+        if (GetComponent<PlayerMovement>() != null)
+        {
+            if (PlayerHealth.startingHealth == 0)
+            {
+                UpdateCainGlobalHealth();
+            }
+            else
+            {
+                this.startingHealth = PlayerHealth.startingHealth;
+                this.currentHealth = PlayerHealth.currentHealth;
+                this.maxHealth = PlayerHealth.maxHealth;
+            }
+        }
     }
     public void TakeDamage(float _damage)
     {
@@ -54,6 +75,7 @@ public class Health : MonoBehaviour
                         GetComponent<PlayerMovement>().enabled = false;
                     dead = true;
                 }
+                UpdateCainGlobalHealth();
             }
             else
             {
@@ -136,6 +158,11 @@ public class Health : MonoBehaviour
 
                     //if(GetComponent<LongSliceScript>() != null)
                     //GetComponent<LongSliceScript>().enabled = false;
+                    if (cainHealth)
+                    {
+                        UpdateCainHealth();
+                    }
+
                     dead = true;
                 }
             }
@@ -143,6 +170,27 @@ public class Health : MonoBehaviour
 
 
     }
+
+    private void UpdateCainGlobalHealth()
+    {
+        PlayerHealth.startingHealth = startingHealth;
+        PlayerHealth.currentHealth = currentHealth;
+        PlayerHealth.maxHealth = maxHealth;
+    }
+
+    private void UpdateCainHealth()
+    {
+        cainHealth.maxHealth = Math.Min(cainHealth.maxHealth + recoveryPoints, 10);
+        cainHealth.currentHealth = Math.Min(cainHealth.currentHealth + recoveryPoints, 10);
+
+        if (permanentUpgrade)
+        {
+            cainHealth.startingHealth = Math.Min(cainHealth.startingHealth + recoveryPoints, 10);
+        }
+
+        UpdateCainGlobalHealth();
+    }
+
     public void AddHealth(float _value)
     {
         currentHealth = Mathf.Clamp(currentHealth + _value, 0, startingHealth);
@@ -186,7 +234,7 @@ public class Health : MonoBehaviour
     {
         //StartCoroutine(DelayedExecution());
         playerDeathCheckPoint.WarpToSafeGround();
-        
+
         anim.ResetTrigger("backToLife");
         anim.ResetTrigger("attack1");
         anim.ResetTrigger("attack2");
@@ -207,6 +255,7 @@ public class Health : MonoBehaviour
         anim.SetBool("CheckDeadCompleted", true);
         dead = false;
         currentHealth = startingHealth;
+        maxHealth = startingHealth;
         //body.velocity = new Vector2(0, 0);
     }
     private IEnumerator DelayedExecution()
